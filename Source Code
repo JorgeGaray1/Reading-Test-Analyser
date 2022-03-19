@@ -1,0 +1,456 @@
+import openpyxl
+import tkinter as tk
+from tkinter import *
+from tkcalendar import Calendar
+from PIL import Image, ImageTk
+import datetime
+import sys
+import os
+
+#initialise tkinter gui
+root = tk.Tk()
+root.title("Reading Test Analyser")
+root.configure(bg='purple')
+
+#resizing the gui
+root.geometry("800x850")
+root.pack_propagate(False)  #window will not be resized depending on the widgets inside
+root.resizable(0, 0)    #window cant be resized
+
+#TITLE
+title = tk.Label(root, text="Reading Test Analyser", font=(None, 50))
+title.place(rely=0, relx=0.2)
+title.configure(bg='purple')
+
+#intstructions
+#test type
+instructions = tk.Label(root, text="Select Test Type", font=(None, 15, 'bold'))
+instructions.place(rely=0.1, relx=0.05)
+instructions.configure(bg='purple')
+
+def GetTestColorSub(type, color, subtest):
+    if type == 'WRAT 5' and color == 'Blue' and subtest == 'Word Reading': #if test type is WRAT 5 and Blue
+        return openpyxl.load_workbook("/Users/jorgegaray/PycharmProjects/pythonProject/WRAT5BlueWordReading.xlsx")
+    if type == 'WRAT 5' and color == 'Blue' and subtest == 'Spelling': #if test type is WRAT 5 and Blue
+        return openpyxl.load_workbook("/Users/jorgegaray/PycharmProjects/pythonProject/WRAT5BlueSpelling.xlsx")
+    if type == 'WRAT 5' and color == 'Blue' and subtest == 'Maths Computation': #if test type is WRAT 5 and Blue
+        return openpyxl.load_workbook("/Users/jorgegaray/PycharmProjects/pythonProject/WRAT5BlueMathsComputation.xlsx")
+    if type == 'WRAT 5' and color == 'Blue' and subtest == 'Sentence Comprehension': #if test type is WRAT 5 and Blue
+        return openpyxl.load_workbook("/Users/jorgegaray/PycharmProjects/pythonProject/WRAT5BlueSentenceComprehension.xlsx")
+    if type == 'WRAT 5' and color == 'Blue' and subtest == 'Reading Composite': #if test type is WRAT 5 and Blue
+        return openpyxl.load_workbook("/Users/jorgegaray/PycharmProjects/pythonProject/WRAT5BlueReadingComposite.xlsx")
+
+    if type == 'WRAT 5' and color == 'Green' and subtest == 'Word Reading': #if test type is WRAT 5 and Green
+        return openpyxl.load_workbook("/Users/jorgegaray/PycharmProjects/pythonProject/WRAT5GreenWordReading.xlsx")
+    if type == 'WRAT 5' and color == 'Green' and subtest == 'Spelling': #if test type is WRAT 5 and Green
+        return openpyxl.load_workbook("/Users/jorgegaray/PycharmProjects/pythonProject/WRAT5GreenSpelling.xlsx")
+    if type == 'WRAT 5' and color == 'Green' and subtest == 'Maths Computation': #if test type is WRAT 5 and Green
+        return openpyxl.load_workbook("/Users/jorgegaray/PycharmProjects/pythonProject/WRAT5GreenMathsComputation.xlsx")
+    if type == 'WRAT 5' and color == 'Green' and subtest == 'Sentence Comprehension': #if test type is WRAT 5 and Green
+        return openpyxl.load_workbook("/Users/jorgegaray/PycharmProjects/pythonProject/WRAT5GreenSentenceComprehension.xlsx")
+    if type == 'WRAT 5' and color == 'Green' and subtest == 'Reading Composite': #if test type is WRAT 5 and Green
+        return openpyxl.load_workbook("/Users/jorgegaray/PycharmProjects/pythonProject/WRAT5GreenReadingComposite.xlsx")
+
+    if type == "WIAT 3" and subtest == 'Spelling':
+        return openpyxl.load_workbook("/Users/jorgegaray/PycharmProjects/pythonProject/WIAT3Spelling.xlsx")
+    if type == "WIAT 3" and subtest == 'Reading Comprehension':
+        return openpyxl.load_workbook("/Users/jorgegaray/PycharmProjects/pythonProject/WIAT3ReadingComprehension.xlsx")
+    if type == "WIAT 3" and subtest == 'Oral Reading Fluency':
+        return openpyxl.load_workbook("/Users/jorgegaray/PycharmProjects/pythonProject/WIAT3OralReadingFluency.xlsx")
+    if type == "WIAT 3" and subtest == 'Oral Reading Accuracy':
+        return openpyxl.load_workbook("/Users/jorgegaray/PycharmProjects/pythonProject/WIAT3OralReadingAccuracy.xlsx")
+    if type == "WIAT 3" and subtest == 'Oral Reading Speed':
+        return openpyxl.load_workbook("/Users/jorgegaray/PycharmProjects/pythonProject/WIAT3OralReadingSpeed.xlsx")
+
+def GetSheet(years, month):
+    if years == 11 and month <= 3:
+        return '111'
+    if years == 11 and 4 <= month <= 7:
+        return '112'
+    if years == 11 and month >= 8:
+        return '113'
+    if years == 12 and month <= 5:
+        return '121'
+    if years == 12 and 6 <= month <= 11:
+        return '122'
+    if years == 13 and month >= 5:
+        return '131'
+    if years == 13 and 6 <= month <= 11:
+        return '132'
+    if years == 14:
+        return '14'
+    if years == 15:
+        return '15'
+    if years == 16:
+        return '16'
+    if years >= 17 and years <=19:
+        return '17-19'
+    else:
+        return '111'
+
+def printcomm():   #function to store the values and print them on the terminal
+    t1 = test.get()
+    t2 = color.get()
+    t3 = subtest.get()
+    t4 = cal1.get_date()
+    t5 = cal2.get_date()
+    t6 = entry.get()
+
+    # getting the month of cal1
+    m1 = cal1.get_date()
+    m1 = int(m1[0:2])
+    # getting the month of cal2
+    m2 = cal2.get_date()
+    m2 = int(m2[0:2])
+    # getting the day of cal1
+    d1 = cal1.get_date()
+    d1 = int(d1[3:5])
+    # getting the day of cal2
+    d2 = cal2.get_date()
+    d2 = int(d2[3:5])
+    # getting the year of cal1
+    y1 = cal1.get_date()
+    y1 = int(y1[6:10])
+    # getting the year of cal2
+    y2 = cal2.get_date()
+    y2 = int(y2[6:10])
+    months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]   #list of months and no of days
+
+    if (d1 > d2): #if day of cal1 is bigger than day of cal2
+        m2 = m2 - 1 #month of cal2 -= 1
+        d2 = d2 + months[m1 - 1]    #day of cal2 += array months[index of m1 -1]
+    if (m1 > m2): #if month of cal1 is bigger than month of cal2
+        y2 = y2 - 1 #year of cal2 -= 1
+        m2 = m2 + 12 #add 12 months to month of cal2
+
+    #calculations to compute age
+    days = d2 - d1
+    month = m2 - m1
+    years = y2 - y1
+
+    if t6.isnumeric() and years > 0 and years<=19:
+        t6 = int(t6)
+        if(t6 < 100):
+            print(t1, t2, t3, days, month, years)
+            #print(years, month, days, t2)   #prints values in terminal
+            my_canvas.place(rely=0.865, relx=0.05)
+            my_canvas.configure(bg="White", height=37)
+            my_canvas.create_line(45, 25,650, 25, fill="red", width=2)
+            photo_label.place(rely=0.45, relx=0.05) #place the image in the window
+        else:
+            error2.place(rely=0.4, relx=0.4)
+    else:
+        error2.place(rely=0.4, relx=0.4)
+
+    wb = GetTestColorSub(t1, t2, t3)
+    print(wb)
+    ws = wb[GetSheet(years, month)]
+    print(ws)
+
+    #max col = 1 sp that it only iterates through the first column
+    rows = ws.iter_rows(max_col=1)       #to get the correct workbook based on test,color and subtest
+
+    #create a 2D list to store the percentiles based on standard score
+    percentile = [[156, 99.9, "Very Superior"],
+                  [155, 99.9, "Very Superior"],
+                  [154, 99.9, "Very Superior"],
+                  [153, 99.9, "Very Superior"],
+                  [152, 99.9, "Very Superior"],
+                  [151, 99.9, "Very Superior"],
+                  [150, 99.9, "Very Superior"],
+                  [149, 99.9, "Very Superior"],
+                  [148, 99.9, "Very Superior"],
+                  [147, 99.9, "Very Superior"],
+                  [146, 99.9, "Very Superior"],
+                  [145, 99.9, "Very Superior"],
+                  [144, 99.8, "Very Superior"],
+                  [143, 99.8, "Very Superior"],
+                  [142, 99.7, "Very Superior"],
+                  [141, 99.7, "Very Superior"],
+                  [140, 99.6, "Very Superior"],
+                  [139, 99.5, "Very Superior"],
+                  [138, 99, "Very Superior"],
+                  [137, 99, "Very Superior"],
+                  [136, 99, "Very Superior"],
+                  [135, 99, "Very Superior"],
+                  [134, 99, "Very Superior"],
+                  [133, 99, "Very Superior"],
+                  [132, 98, "Very Superior"],
+                  [131, 98., "Very Superior"],
+                  [130, 98., "Very Superior"],
+                  [129, 97., "Superior"],
+                  [128, 97, "Superior"],
+                  [127, 96, "Superior"],
+                  [126, 96, "Superior"],
+                  [125, 95, "Superior"],
+                  [124, 95, "Superior"],
+                  [123, 94, "Superior"],
+                  [122, 93, "Superior"],
+                  [121, 92, "Superior"],
+                  [120, 91, "High Average"],
+                  [119, 90, "High Average"],
+                  [118, 88, "High Average"],
+                  [117, 87, "High Average"],
+                  [116, 86, "High Average"],
+                  [115, 84, "High Average"],
+                  [114, 82, "High Average"],
+                  [113, 81, "High Average"],
+                  [112, 79, "High Average"],
+                  [111, 77, "High Average"],
+                  [110, 75, "Average"],
+                  [109, 73, "Average"],
+                  [108, 70, "Average"],
+                  [107, 68, "Average"],
+                  [106, 66, "Average"],
+                  [105, 63, "Average"],
+                  [104, 61, "Average"],
+                  [103, 58, "Average"],
+                  [102, 55, "Average"],
+                  [101, 53, "Average"],
+                  [100, 50, "Average"],
+                  [99, 47, "Average"],
+                  [98, 45, "Average"],
+                  [97, 42, "Average"],
+                  [96, 40, "Average"],
+                  [95, 37, "Average"],
+                  [94, 34, "Average"],
+                  [93, 32, "Average"],
+                  [92, 30, "Average"],
+                  [91, 27, "Average"],
+                  [90, 25, "Average"],
+                  [89, 23, "Low Average"],
+                  [88, 21, "Low Average"],
+                  [87, 19, "Low Average"],
+                  [86, 18, "Low Average"],
+                  [85, 16, "Low Average"],
+                  [84, 14, "Low Average"],
+                  [83, 13, "Low Average"],
+                  [82, 12, "Low Average"],
+                  [81, 10, "Low Average"],
+                  [80, 9, "Low Average"],
+                  [79, 8, "Borderline"],
+                  [78, 7, "Borderline"],
+                  [77, 6, "Borderline"],
+                  [76, 5, "Borderline"],
+                  [75, 5, "Borderline"],
+                  [74, 4, "Borderline"],
+                  [73, 4, "Borderline"],
+                  [72, 3, "Borderline"],
+                  [71, 3, "Borderline"],
+                  [70, 2, "Borderline"],
+                  [69, 2, "Impaired"],
+                  [68, 2, "Impaired"],
+                  [67, 1, "Mild(69-55)"],
+                  [66, 1, "Mild(69-55)"],
+                  [65, 1, "Moderate(54-40)"],
+                  [64, 1, "Moderate(54-40)"],
+                  [63, 1, "Sever(39-25)"],
+                  [62, 1, "Sever(39-25)"],
+                  [61, 0.5, "Profound(<25)"],
+                  [60, 0.4, "Profound(<25)"],
+                  [59, 0.3, "Profound(<25)"],
+                  [58, 0.2, "Profound(<25)"],
+                  [57, 0.1, "Profound(<25)"],
+                  [56, 0.1, "Profound(<25)"],
+                  [55, 0.1, "Profound(<25)"],
+                  [54, 0.1, "Profound(<25)"],
+                  [53, 0.1, "Profound(<25)"],
+                  [52, 0.1, "Profound(<25)"],
+                  [51, 0.1, "Profound(<25)"],
+                  [50, 0.1, "Profound(<25)"],
+    ]
+
+    for row in rows:
+        for cell in row:
+            if cell.value == t6:
+                score = str(ws.cell(row=cell.row, column=2).value)
+                scoretext.configure(text="Standard Score: " +score)
+                scoretext.place(rely=0.92, relx=0.05)
+                agetext.configure(text="Age: " + str(years) + " years " + str(month) +" months "+ str(days)+ " days")
+                agetext.place(rely=0.96, relx=0.05)
+                print("your standard score is " + score)
+
+                for i in percentile:
+                    if i[0] == int(score):
+                        print(i[1], i[2])
+                        perc.configure(text=" You are in the " + str(i[1]) + "th Percentile", bg="Purple")
+                        perc.place(rely=0.92, relx=0.5)
+                        rank.configure(text="Rank: " + i[2], bg="Purple")
+                        rank.place(rely=0.96, relx=0.5)
+
+                if int(score) < 55:
+                    my_canvas.create_line(50, 5, 50, 25, fill="red", width=2, arrow='first')
+                if int(score)>=55 and int(score) < 70:
+                    my_canvas.create_line(110, 5, 110, 25, fill="red", width=2, arrow='first')
+                if int(score)>=70 and int(score) <85:
+                    my_canvas.create_line(205, 5, 205, 25, fill="red", width=2, arrow='first')
+                if int(score)>=85 and int(score)<100 :
+                    my_canvas.create_line(305, 5, 305, 25, fill="red", width=2, arrow='first')
+                if int(score)>=100 and int(score)<115 :
+                    my_canvas.create_line(405, 5, 405, 25, fill="red", width=2, arrow='first')
+                if int(score)>=115 and int(score)<130 :
+                    my_canvas.create_line(505, 5, 505, 25, fill="red", width=2, arrow='first')
+                if int(score)>=130 and int(score)<145 :
+                    my_canvas.create_line(605, 5, 605, 25, fill="red", width=2, arrow='first')
+                if int(score)>145 :
+                    my_canvas.create_line(650, 5, 650, 25, fill="red", width=2, arrow='first')
+
+def reset():    #reset the input values
+    python = sys.executable
+    os.execl(python, python, * sys.argv)
+    '''test.set(TYPES[0])  # default value
+
+    #Since WIAT 3 is the default value, we need to reset the color menu to just be N/A
+    #so delete the menu and add the list which holds 'N/A'
+    w2['menu'].delete(0, 'end')
+    for opt1 in COLORS:
+        w2['menu'].add_command(label=opt1, command=tk._setit(color, opt1))
+        color.set(COLORS[0])
+
+    subtest.set(SUBTEST[0])  # default value
+    entry.delete(0, 'end')
+    photo_label.place_forget()
+    my_canvas.delete("all")
+    my_canvas.configure(bg="Purple", highlightthickness=0)
+    error2.after(50, error2.destroy())
+    scoretext.destroy()
+    agetext.destroy()
+    #resetting the values being stored when submitted'''
+
+
+def updatetest(event):  #function to update list of subtests depending on test type
+    #if test type is WIAT 3, stay the same.
+    #otherwise, set the subtest to WRAT 5
+    if test.get() == "WRAT 5":
+        w3['menu'].delete(0, 'end')
+        for opt in SUBTEST1:
+            w3['menu'].add_command(label=opt, command=tk._setit(subtest, opt))
+            subtest.set(SUBTEST1[0])
+
+        w2['menu'].delete(0, 'end')
+        for opt1 in COLORS1:
+            w2['menu'].add_command(label=opt1, command=tk._setit(color, opt1))
+            color.set(COLORS1[0])
+    else:
+        w3['menu'].delete(0, 'end')
+        for opt in SUBTEST:
+            w3['menu'].add_command(label=opt, command=tk._setit(subtest, opt))
+            subtest.set(SUBTEST[0])
+        w2['menu'].delete(0, 'end')
+        for opt1 in COLORS:
+            w2['menu'].add_command(label=opt1, command=tk._setit(color, opt1))
+            color.set(COLORS[0])
+
+TYPES = ["WIAT 3",
+         "WRAT 5"
+]
+
+test = tk.StringVar()
+test.set(TYPES[1]) #default value
+w1 = tk.OptionMenu(root, test, *TYPES, command=updatetest)
+w1.place(rely=0.13, relx = 0.05)
+w1.configure(bg='Purple')
+
+#color types
+instructions1 = tk.Label(root, text="Select Color", font=(None, 15, 'bold'))
+instructions1.place(rely=0.175, relx = 0.05)
+instructions1.configure(bg='purple')
+
+COLORS = ["N/A"]
+COLORS1 = ["Green", "Blue"]
+
+color = tk.StringVar()
+color.set(COLORS[0]) #default value
+w2 = tk.OptionMenu(root, color, *COLORS)
+w2.place(rely=0.205, relx = 0.05)
+w2.configure(bg='Purple')
+
+    #subtests - WIAT 3
+instructions2 = tk.Label(root, text="Select Subtest", font=(None, 15, 'bold'))
+instructions2.place(rely= 0.245, relx = 0.05)
+instructions2.configure(bg='purple')
+
+SUBTEST = ["Spelling",
+           "Reading Comprehension",
+           "Oral Reading Fluency",
+           "Oral Reading Accuracy",
+           "Oral Reading Speed"
+    ]
+
+    #subtests - WRAT 5
+SUBTEST1 = ["Word Reading",
+           "Spelling",
+           "Maths Computation",
+           "Sentence Comprehension",
+           "Reading Composite"
+    ]
+
+subtest = tk.StringVar()
+subtest.set(SUBTEST[0]) #default value
+w3 = tk.OptionMenu(root, subtest, *SUBTEST)   #DEFAULT SUBTEST
+w3.place(rely=0.275, relx=0.05)
+w3.configure(bg='Purple')
+
+#raw test score
+rawtest = tk.Label(root, text="Enter Raw Test Score", font=(None, 15, 'bold'))
+rawtest.place(rely=0.315, relx=0.05)
+rawtest.configure(bg='Purple')
+
+entry = tk.Entry(root, width=8, validate="key")
+entry.place(rely=0.348, relx=0.055)
+
+#Date of birth
+instructions3 = tk.Label(root, text="Select Date of Birth",font=(None, 15, 'bold'))
+instructions3.place(rely=0.1, relx=0.35)
+instructions3.configure(bg='purple')
+
+#add calendar
+cal1 = Calendar(root, selectmode = 'day', year = 2020, month = 5, day = 5, date_pattern='mm/dd/yyyy')
+cal1.place(rely = 0.13, relx = 0.3)
+
+#Date of test
+now = datetime.datetime.now() #to get the current date to be set as default but can still be changed
+time = now.strftime("%Y-%m-%d %H:%M:%S")
+yr = int(time[0:4])
+mo = int(time[5:7])
+day = int(time[8:10])
+instructions4 = tk.Label(root, text="Select Date of Test", font=(None, 15, 'bold'))
+instructions4.place(rely=0.1, relx=0.69)
+instructions4.configure(bg='purple')
+
+cal2 = Calendar(root, selectmode='day', year=yr, month=mo, day=day, date_pattern='mm/dd/yyyy')
+cal2.place(rely = 0.13, relx = 0.65)
+
+#create button to submit the values
+B = Button(root, text="Submit", bg='Purple', activebackground='#4444ff', command=printcomm)
+B.place(rely = 0.4, relx = 0.06)
+
+#button to reset all input values
+R = Button(root, text="Reset", bg='Purple', activebackground='#4444ff', command=reset)
+R.place(rely = 0.4, relx = 0.15)
+
+#adding the normal curve image
+photo = Image.open("/Users/jorgegaray/Desktop/feedbacksheet.png")
+resizedimage = photo.resize((700, 350))
+photo1 = ImageTk.PhotoImage(resizedimage) #resizing the image
+photo_label = tk.Label(image=photo1)
+photo_label.image = photo1
+photo_label.place(rely = 0.45, relx = 0.05)
+photo_label.place_forget()  #this is to hide the image when beginning
+
+my_canvas = Canvas(root, width=700, height=33)
+# if invalid dates, label to show
+error2 = tk.Label(root, text="Invalid Score or Age, reset and try again", bg="Purple", font=(None, 20, 'bold'))
+
+#agetext
+agetext = tk.Label(root, text="Your Age: ", font=(None, 20, 'bold'), bg="Purple")
+#scoretext
+scoretext = tk.Label(root, text="Your standard score: ", font=(None, 20, 'bold'), bg="Purple")
+#wrong
+wrong = tk.Label(root, text="Your raw test score is invalid, reset and input valid number", font=(None, 20, 'bold'), bg="Purple")
+#percentile
+perc = tk.Label(root, text="You are in the ", font=(None, 20, 'bold'))
+#ranked scale Score
+rank = tk.Label(root, text="Superior", font=(None, 20, 'bold'))
+
+root.mainloop()
