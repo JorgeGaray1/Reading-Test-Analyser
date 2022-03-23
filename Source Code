@@ -88,7 +88,7 @@ def GetSheet(years, month):
     else:
         return '111'
 
-def printcomm():   #function to store the values and print them on the terminal
+def submit():   #function to store the values and print them on the terminal
     t1 = test.get()
     t2 = color.get()
     t3 = subtest.get()
@@ -131,11 +131,9 @@ def printcomm():   #function to store the values and print them on the terminal
     if t6.isnumeric() and years > 0 and years<=19:
         t6 = int(t6)
         if(t6 < 100):
-            print(t1, t2, t3, days, month, years)
-            #print(years, month, days, t2)   #prints values in terminal
+            #print(t1, t2, t3, days, month, years)
             my_canvas.place(rely=0.865, relx=0.05)
             my_canvas.configure(bg="White", height=37)
-            my_canvas.create_line(45, 25,650, 25, fill="red", width=2)
             photo_label.place(rely=0.45, relx=0.05) #place the image in the window
         else:
             error2.place(rely=0.4, relx=0.4)
@@ -146,9 +144,6 @@ def printcomm():   #function to store the values and print them on the terminal
     print(wb)
     ws = wb[GetSheet(years, month)]
     print(ws)
-
-    #max col = 1 sp that it only iterates through the first column
-    rows = ws.iter_rows(max_col=1)       #to get the correct workbook based on test,color and subtest
 
     #create a 2D list to store the percentiles based on standard score
     percentile = [[156, 99.9, "Very Superior"],
@@ -260,6 +255,9 @@ def printcomm():   #function to store the values and print them on the terminal
                   [50, 0.1, "Profound(<25)"],
     ]
 
+    #max col = 1 sp that it only iterates through the first column
+    rows = ws.iter_rows(max_col=1)       #to get the correct workbook based on test,color and subtest
+
     for row in rows:
         for cell in row:
             if cell.value == t6:
@@ -278,6 +276,7 @@ def printcomm():   #function to store the values and print them on the terminal
                         rank.configure(text="Rank: " + i[2], bg="Purple")
                         rank.place(rely=0.96, relx=0.5)
 
+                my_canvas.create_line(45, 25, 650, 25, fill="red", width=2)
                 if int(score) < 55:
                     my_canvas.create_line(50, 5, 50, 25, fill="red", width=2, arrow='first')
                 if int(score)>=55 and int(score) < 70:
@@ -341,6 +340,7 @@ def updatetest(event):  #function to update list of subtests depending on test t
             w2['menu'].add_command(label=opt1, command=tk._setit(color, opt1))
             color.set(COLORS[0])
 
+#list to hold test types
 TYPES = ["WIAT 3",
          "WRAT 5"
 ]
@@ -404,8 +404,12 @@ instructions3 = tk.Label(root, text="Select Date of Birth",font=(None, 15, 'bold
 instructions3.place(rely=0.1, relx=0.35)
 instructions3.configure(bg='purple')
 
-#add calendar
-cal1 = Calendar(root, selectmode = 'day', year = 2020, month = 5, day = 5, date_pattern='mm/dd/yyyy')
+#calendar widget
+cal1 = Calendar(
+    root, selectmode = 'day',
+    year = 2020, month = 5, day = 5,
+    date_pattern='mm/dd/yyyy')
+
 cal1.place(rely = 0.13, relx = 0.3)
 
 #Date of test
@@ -422,7 +426,7 @@ cal2 = Calendar(root, selectmode='day', year=yr, month=mo, day=day, date_pattern
 cal2.place(rely = 0.13, relx = 0.65)
 
 #create button to submit the values
-B = Button(root, text="Submit", bg='Purple', activebackground='#4444ff', command=printcomm)
+B = Button(root, text="Submit", bg='Purple', activebackground='#4444ff', command=submit)
 B.place(rely = 0.4, relx = 0.06)
 
 #button to reset all input values
